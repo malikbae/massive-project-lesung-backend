@@ -3,9 +3,22 @@ const { randomUUID } = require("crypto");
 const bcryptjs = require("bcryptjs");
 
 async function register(req, res) {
-  const { name, email, phoneNumber, password, confPassword } = req.body;
+  const { name, email, phoneNumber, password, confPassword, role } = req.body;
 
-  if (name === undefined || name === "" || email === undefined || email === "" || phoneNumber === undefined || isNaN(+phoneNumber) || password === undefined || password === "" || confPassword === undefined || confPassword === "")
+  if (
+    name === undefined ||
+    name === "" ||
+    email === undefined ||
+    email === "" ||
+    phoneNumber === undefined ||
+    isNaN(+phoneNumber) ||
+    password === undefined ||
+    password === "" ||
+    confPassword === undefined ||
+    confPassword === "" ||
+    role === undefined ||
+    role === ""
+  )
     return res.status(400).json("Invalid data!");
 
   if (password !== confPassword) return res.status(400).json("Password not match!");
@@ -26,12 +39,12 @@ async function register(req, res) {
     await query(
       `
         INSERT INTO siswa (
-            uuid, name, email, phone_number, password
+            uuid, name, email, phone_number, password, role
         ) VALUES (
-            ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?
         );
     `,
-      [randomUUID(), name, email, phoneNumber, hash]
+      [randomUUID(), name, email, phoneNumber, hash, role]
     );
 
     return res.status(200).json("Register success!");
@@ -64,7 +77,7 @@ async function login(req, res) {
       return res.status(400).json("Password yang Anda masukkan salah!");
     }
 
-    return res.status(200).json("Login successful!");
+    return res.status(200).json({ user: user[0] });
   } catch (error) {
     return res.status(400).json("Something went wrong!");
   }
