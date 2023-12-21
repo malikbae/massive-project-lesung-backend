@@ -26,7 +26,7 @@ async function register(req, res) {
   try {
     const isDuplicate = await query(
       `
-        SELECT id FROM siswa WHERE phone_number = ? OR email = ? 
+        SELECT id FROM users WHERE phone_number = ? OR email = ? 
     `,
       [phoneNumber, email]
     );
@@ -38,7 +38,7 @@ async function register(req, res) {
 
     await query(
       `
-        INSERT INTO siswa (
+        INSERT INTO users (
             uuid, name, email, phone_number, password, role
         ) VALUES (
             ?, ?, ?, ?, ?, ?
@@ -60,7 +60,7 @@ async function login(req, res) {
     if (emailOrPhoneNumber) {
       user = await query(
         `
-        SELECT * FROM siswa WHERE email = ? OR phone_number = ?;
+        SELECT * FROM users WHERE email = ? OR phone_number = ?;
       `,
         [emailOrPhoneNumber, emailOrPhoneNumber]
       );
